@@ -1,5 +1,5 @@
 from server.Server import server, jsonifyPlus, request, User, userM
-from flask import redirect
+from flask import redirect, render_template
 from flask_login import login_user, logout_user, login_required, current_user
 from AppScanM import run_cmd
 
@@ -137,13 +137,15 @@ def login():
         description: success login.
         example: "{'message':'admin login success.'}"
     """
+    if request.method == 'GET':
+        return render_template("/login.html")
     id = request.values.get('id')
     if not id in userM.User.USERS: return jsonifyPlus({'message':f'not find user: {id}.'}),401
     if not (request.values.get('password') == userM.User.USERS[id].PASSWORD):
         server.logger.error(f'{id} login fail with password error: {request.values.get("password")}')
         return jsonifyPlus({'message':f'{id} login fail with password error.'}),403
-    user = User()
-    user.id = id
+    USERDATA = userM.User.USERS[id]
+    user = User(**USERDATA.__dict__)
     login_user(user)
     return jsonifyPlus({'message':f'{id} login success.'})
     

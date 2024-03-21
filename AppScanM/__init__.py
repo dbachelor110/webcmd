@@ -10,7 +10,7 @@ def run_cmd(command):
             PROCESS.stdin.write(command)
             PROCESS.stdin.flush()
         else:
-            PROCESS.stdin.
+            PROCESS.communicate()
         output = PROCESS.stdout.readlines()
         error = PROCESS.stderr.readlines()
         return {"output":output,"error":error}
